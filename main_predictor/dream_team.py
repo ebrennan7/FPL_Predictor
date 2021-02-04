@@ -15,6 +15,7 @@ print(upcoming_gameweek)
 players_raw = parsed['elements']
 players = []
 
+# Make new list with relevant properties
 for player in players_raw:
     players.append({
         'id': player['id'],
@@ -25,7 +26,32 @@ for player in players_raw:
     })
 
 
-dream_team = sorted(players, key=lambda i: i['gw_points'], reverse=True)
+provisional_dream_team = sorted(players, key=lambda i: i['gw_points'], reverse=True)
+dream_team = []
+# Make sure positions are valid
+for dream_player in provisional_dream_team[:11]:
+    provisional_dream_team.remove(dream_player)
+    dream_team.append(dream_player)
 
-for dream_player in dream_team[:11]:
+# dream_team = sorted(dream_team, key=lambda i: i['pos'])
+
+# Goalie Check!
+if not any(player['pos'] == 1 for player in dream_team):
+    pos_of_player_to_go = dream_team[-1]['pos']
+    print('position of player to be removed ', pos_of_player_to_go)
+    if pos_of_player_to_go == 4:
+        print('amount of strikers', sum(player['pos'] == 4 for player in dream_team))
+        if sum(player['pos'] == 4 for player in dream_team) < 2:
+            print('not enough striker')
+        else:
+            dream_team.pop()
+            for player in provisional_dream_team:
+                if player['pos'] == 1:
+                    dream_team.append(player)
+                    provisional_dream_team.remove(player)
+                    break
+
+for dream_player in dream_team:
     print(dream_player)
+
+print(provisional_dream_team)
