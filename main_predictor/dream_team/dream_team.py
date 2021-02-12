@@ -9,6 +9,21 @@ class Option:
     UNDERLOAD = 1
     OVERLOAD = 2
 
+class Constants:
+    GOALKEEPER = 1
+    MAX_GOALKEEPER = 1
+    MIN_GOALKEEPER = 1
+    DEFENDER = 2
+    MAX_DEFENDER = 5
+    MIN_DEFENDER = 2
+    MIDFIELDER = 3
+    MAX_MIDFIELDER = 5
+    MIN_MIDFIELDER = 2
+    STRIKER = 4
+    MAX_STRIKER = 3
+    MIN_STRIKER = 1
+
+
 
 class Utilities:
     @staticmethod
@@ -85,33 +100,33 @@ class InitialTeamBuild:
 class TeamValidityCheck:
 
     def goalie_check(self):
-        if sum(player['pos'] == 1 for player in dream_team) < 1:
+        if sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) < Constants.MIN_GOALKEEPER:
             return Option.UNDERLOAD
-        elif sum(player['pos'] == 1 for player in dream_team) > 1:
+        elif sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) > Constants.MAX_GOALKEEPER:
             return Option.OVERLOAD
         else:
             return Option.OK
 
     def defender_check(self):
-        if sum(player['pos'] == 2 for player in dream_team) < 3:
+        if sum(player['pos'] == Constants.DEFENDER for player in dream_team) < Constants.MIN_DEFENDER:
             return Option.UNDERLOAD
-        elif sum(player['pos'] == 2 for player in dream_team) > 5:
+        elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) > Constants.MAX_DEFENDER:
             return Option.OVERLOAD
         else:
             return Option.OK
 
     def midfieder_check(self):
-        if sum(player['pos'] == 3 for player in dream_team) < 2:
+        if sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) < Constants.MIN_MIDFIELDER:
             return Option.UNDERLOAD
-        elif sum(player['pos'] == 3 for player in dream_team) > 5:
+        elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) > Constants.MAX_MIDFIELDER:
             return Option.OVERLOAD
         else:
             return Option.OK
 
     def striker_check(self):
-        if sum(player['pos'] == 4 for player in dream_team) < 1:
+        if sum(player['pos'] == Constants.STRIKER for player in dream_team) < Constants.MIN_STRIKER:
             return Option.UNDERLOAD
-        elif sum(player['pos'] == 4 for player in dream_team) > 3:
+        elif sum(player['pos'] == Constants.STRIKER for player in dream_team) > Constants.MAX_STRIKER:
             return Option.OVERLOAD
         else:
             return Option.OK
@@ -123,30 +138,17 @@ class TeamValidityCheck:
         # No Goalie
         while self.goalie_check() == Option.UNDERLOAD:
             pos_of_player_to_go = dream_team[squad_number]['pos']
-            if pos_of_player_to_go == 4:
-                if self.striker_check() == Option.UNDERLOAD:
-                    print('not enough striker')
-                    squad_number -= 1
-                else:
-                    Utilities.remove_player(squad_number, 1)
-            elif pos_of_player_to_go == 2:
-                if self.defender_check() == Option.UNDERLOAD:
-                    print('not enough defenders')
-                    squad_number -= 1
-                else:
-                    Utilities.remove_player(squad_number, 1)
-            elif pos_of_player_to_go == 3:
-                if self.midfieder_check() == Option.UNDERLOAD:
-                    print('not enough mids')
-                    squad_number -= 1
-                else:
-                    Utilities.remove_player(squad_number, 1)
+            while self.goalie_check() == Option.UNDERLOAD:
+                pos_of_player_to_go = dream_team[squad_number]['pos']
+                print('pos', pos_of_player_to_go)
+                self.prepare_to_swap(squad_number, pos_of_player_to_go, Constants.GOALKEEPER)
+                squad_number -= 1
 
         # More than one Goalie
         while self.goalie_check() == Option.OVERLOAD:
             print('dream team', dream_team)
             for player in reversed(dream_team):
-                if player['pos'] == 1 and self.goalie_check() == Option.OVERLOAD:
+                if player['pos'] == Constants.GOALKEEPER and self.goalie_check() == Option.OVERLOAD:
                     print('removing', player['name'])
                     dream_team.remove(player)
                     Utilities.add_player()
@@ -154,16 +156,33 @@ class TeamValidityCheck:
 
     def defender_swap(self):
         squad_number = len(dream_team)-1
-        while sum(player['pos'] == 2 for player in dream_team) < 3:
-            print('Not enough defenders')
+        while self.defender_check() == Option.UNDERLOAD:
             pos_of_player_to_go = dream_team[squad_number]['pos']
-            if pos_of_player_to_go == 1 and sum(player['pos'] for player in dream_team) == 1 or pos_of_player_to_go == 2:
-                print('defender for goalie')
-                squad_number -= 1
-            elif pos_of_player_to_go == 4 and not Utilities.check_strikers():
-                squad_number -= 1
-            else:
-                Utilities.remove_player(squad_number, 2)
+            print('pos', pos_of_player_to_go)
+            self.prepare_to_swap(squad_number, pos_of_player_to_go, Constants.DEFENDER)
+            squad_number -= 1
+
+        while self.defender_check() == Option.OVERLOAD:
+            for player in reversed(dream_team):
+                if player['pos'] == Constants.DEFENDER and self.defender_check() == Option.OVERLOAD:
+                    print('removing', player['name'])
+                    dream_team.remove(player)
+                    Utilities.add_player()
+
+    def prepare_to_swap(self, squad_number, outgoing_pos, incoming_pos):
+        if outgoing_pos == Constants.GOALKEEPER:
+            if not self.goalie_check() == Option.UNDERLOAD:
+                Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.DEFENDER:
+            if not self.defender_check() == Option.UNDERLOAD:
+                Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.MIDFIELDER:
+            if not self.midfieder_check() == Option.UNDERLOAD:
+                Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.STRIKER:
+            if not self.striker_check() == Option.UNDERLOAD:
+                Utilities.remove_player(squad_number, incoming_pos)
+
 
 
     # def midfielder_swap(self):
