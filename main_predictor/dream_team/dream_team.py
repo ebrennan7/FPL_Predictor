@@ -19,7 +19,7 @@ class Constants:
     MIN_GOALKEEPER = 1
     DEFENDER = 2
     MAX_DEFENDER = 5
-    MIN_DEFENDER = 2
+    MIN_DEFENDER = 3
     MIDFIELDER = 3
     MAX_MIDFIELDER = 5
     MIN_MIDFIELDER = 2
@@ -47,16 +47,19 @@ class Utilities:
                 points_clash = player['gw_points']
                 value_matched_players.append(player)
 
-        value_sorted_players = sorted(value_matched_players, key=lambda i: i['price'])
-        for player in value_sorted_players:
-            if player['pos'] == 1 and TeamValidityCheck.goalie_check() == Option.UNDERLOAD:
-                dream_team.append(player)
-            elif player['pos'] == 2 and TeamValidityCheck.defender_check() == Option.HAS_ROOM:
-                dream_team.append(player)
-            elif player['pos'] == 3 and TeamValidityCheck.midfielder_check() == Option.HAS_ROOM:
-                dream_team.append(player)
-            elif player['pos'] == 4 and TeamValidityCheck.striker_check() == Option.HAS_ROOM:
-                dream_team.append(player)
+            value_sorted_players = sorted(value_matched_players, key=lambda i: i['price'])
+            for player in value_sorted_players:
+                if player['pos'] == 1 and TeamValidityCheck.goalie_check() == Option.UNDERLOAD:
+                    dream_team.append(player)
+                elif player['pos'] == 2 and TeamValidityCheck.defender_check() == Option.HAS_ROOM:
+                    dream_team.append(player)
+                elif player['pos'] == 3 and TeamValidityCheck.midfielder_check() == Option.HAS_ROOM:
+                    dream_team.append(player)
+                elif player['pos'] == 4 and TeamValidityCheck.striker_check() == Option.HAS_ROOM:
+                    dream_team.append(player)
+                else:
+                    points_clash = 0
+                    break
 
 
 class InitialTeamBuild:
@@ -87,7 +90,7 @@ class InitialTeamBuild:
 
         global provisional_dream_team
         global dream_team
-        provisional_dream_team = sorted(players, key=lambda i: i['gw_points'], reverse=True)
+        provisional_dream_team = sorted(players, key=lambda i: (i['gw_points'], -i['price']), reverse=True)
         dream_team = []
 
         # Make sure positions are valid
@@ -165,7 +168,6 @@ class TeamValidityCheck:
         while self.defender_check() == Option.OVERLOAD:
             for player in reversed(dream_team):
                 if player['pos'] == Constants.DEFENDER and self.defender_check() == Option.OVERLOAD:
-                    print('removing', player['name'])
                     dream_team.remove(player)
                     Utilities.add_player()
 
@@ -224,7 +226,6 @@ class TeamBuild:
 
 begin_time = datetime.datetime.now()
 tb = TeamBuild()
-
 for dream_player in sorted(dream_team, key=lambda i: i['pos']):
     total_points += dream_player['gw_points']
     total_price += dream_player['price']
