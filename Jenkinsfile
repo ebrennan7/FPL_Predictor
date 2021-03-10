@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'pip3 install -r requirements.txt'
+                sh '''
+                docker build -t dream_team_image .
+                '''
             }
         }
     }
