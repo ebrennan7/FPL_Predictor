@@ -1,14 +1,52 @@
+// pipeline {
+//     agent { docker-agent }
+//
+//     stages {
+//         stage('build') {
+//
+//             steps {
+//                 sh '''
+//                 docker build -t dream_team_image .
+//                 '''
+//             }
+//         }
+//     }
+// }
+
+
+properties([pipelineTriggers([githubPush()])])
+
 pipeline {
-    agent { docker-agent }
+    /* specify nodes for executing */
+    agent {
+        label 'github-ci'
+    }
 
     stages {
-        stage('build') {
-
+        /* checkout repo */
+        stage('Checkout SCM') {
             steps {
-                sh '''
-                docker build -t dream_team_image .
-                '''
+                checkout([
+                 $class: 'GitSCM',
+                 branches: [[name: 'master']],
+                 userRemoteConfigs: [[
+                    url: 'git@github.com:ebrennan7/FPL_Predictor.git',
+                    credentialsId: '',
+                 ]]
+                ])
+            }
+        }
+         stage('Do the deployment') {
+            steps {
+                echo ">> Run deploy applications "
             }
         }
     }
+
+    /* Cleanup workspace */
+    post {
+       always {
+           deleteDir()
+       }
+   }
 }
