@@ -3,7 +3,6 @@ pipeline {
 
     stages {
         stage('build') {
-
             steps {
                 sh '''
                 docker build -t dream_team_image .
