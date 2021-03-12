@@ -2,7 +2,7 @@ properties([pipelineTriggers([githubPush()])])
 
 pipeline {
 
-    agent docker
+    agent { docker }
 
     stages {
          stage('Docker Build') {
