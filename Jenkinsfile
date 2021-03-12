@@ -27,10 +27,10 @@ pipeline {
                 checkout([
                  $class: 'GitSCM',
                  branches: [[name: 'master']],
-                 userRemoteConfigs: [[
-                    url: 'git@github.com:ebrennan7/FPL_Predictor.git',
-                    credentialsId: '',
-                 ]]
+//                  userRemoteConfigs: [[
+//                     url: 'git@github.com:ebrennan7/FPL_Predictor.git',
+//                     credentialsId: '',
+//                  ]]
                 ])
             }
         }
