@@ -2,9 +2,9 @@ properties([pipelineTriggers([githubPush()])])
 
 pipeline {
 
-    agent {
-        docker { image 'node:14-alpine' }
-    }
+
+    agent { dockerfile true }
+
 
     stages {
          stage('Docker Build') {
