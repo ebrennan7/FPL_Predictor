@@ -3,7 +3,9 @@ properties([pipelineTriggers([githubPush()])])
 pipeline {
 
 
-    agent { dockerfile true }
+    agent {
+        label 'docker'
+    }
 
 
     stages {
