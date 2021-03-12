@@ -1,42 +1,18 @@
-// pipeline {
-//     agent { docker-agent }
-//
-//     stages {
-//         stage('build') {
-//
-//             steps {
-//                 sh '''
-//                 docker build -t dream_team_image .
-//                 '''
-//             }
-//         }
-//     }
-// }
-
-
 properties([pipelineTriggers([githubPush()])])
 
 pipeline {
-    /* specify nodes for executing */
+
     agent any
 
     stages {
-        /* checkout repo */
-//         stage('Checkout SCM') {
-//             steps {
-//                 checkout([
-//                  $class: 'GitSCM',
-//                  branches: [[name: 'master']],
-//                  userRemoteConfigs: [[
-//                     url: 'git@github.com:ebrennan7/FPL_Predictor.git',
-//                     credentialsId: '',
-//                  ]]
-//                 ])
-//             }
-//         }
-         stage('Do the deployment') {
+         stage('Docker Build') {
             steps {
-                echo ">> Run deploy applications "
+            sh """
+                echo ">> Docker Building ${env.BUILD_NUMBER}"
+                build image: docker build -t image:0.0.${env.BUILD_NUMBER} .
+                docker run -d -p 5000:5000 image:0.0.${env.BUILD_NUMBER}
+                docker logs
+            """
             }
         }
     }
