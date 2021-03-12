@@ -4,7 +4,7 @@ pipeline {
 
 
     agent {
-        label 'docker-agent'
+        label 'docker'
     }
 
 
