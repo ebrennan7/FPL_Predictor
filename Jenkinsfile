@@ -22,18 +22,18 @@ pipeline {
 
     stages {
         /* checkout repo */
-        stage('Checkout SCM') {
-            steps {
-                checkout([
-                 $class: 'GitSCM',
-                 branches: [[name: 'master']],
+//         stage('Checkout SCM') {
+//             steps {
+//                 checkout([
+//                  $class: 'GitSCM',
+//                  branches: [[name: 'master']],
 //                  userRemoteConfigs: [[
 //                     url: 'git@github.com:ebrennan7/FPL_Predictor.git',
 //                     credentialsId: '',
 //                  ]]
-                ])
-            }
-        }
+//                 ])
+//             }
+//         }
          stage('Do the deployment') {
             steps {
                 echo ">> Run deploy applications "
