@@ -7,7 +7,6 @@ pipeline {
         label 'master'
     }
 
-
     stages {
          stage('Docker Build') {
             steps {
