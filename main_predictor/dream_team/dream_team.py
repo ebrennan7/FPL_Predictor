@@ -205,18 +205,14 @@ class TeamValidityCheck:
                     Utilities.add_player()
 
     def prepare_to_swap(self, squad_number, outgoing_pos, incoming_pos):
-        if outgoing_pos == Constants.GOALKEEPER:
-            if not self.goalie_check() == Option.UNDERLOAD:
-                Utilities.remove_player(squad_number, incoming_pos)
-        if outgoing_pos == Constants.DEFENDER:
-            if not self.defender_check() == Option.UNDERLOAD:
-                Utilities.remove_player(squad_number, incoming_pos)
-        if outgoing_pos == Constants.MIDFIELDER:
-            if not self.midfielder_check() == Option.UNDERLOAD:
-                Utilities.remove_player(squad_number, incoming_pos)
-        if outgoing_pos == Constants.STRIKER:
-            if not self.striker_check() == Option.UNDERLOAD:
-                Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.GOALKEEPER and not self.goalie_check() == Option.UNDERLOAD:
+            Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.DEFENDER and not self.defender_check() == Option.UNDERLOAD:
+            Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.MIDFIELDER and not self.midfielder_check() == Option.UNDERLOAD:
+            Utilities.remove_player(squad_number, incoming_pos)
+        if outgoing_pos == Constants.STRIKER and not self.striker_check() == Option.UNDERLOAD:
+            Utilities.remove_player(squad_number, incoming_pos)
 
 
 class TeamBuild:
