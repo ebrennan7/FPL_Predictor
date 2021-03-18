@@ -46,20 +46,27 @@ class Utilities:
             if player['gw_points'] >= points_clash:
                 points_clash = player['gw_points']
                 value_matched_players.append(player)
+            else:
+                break
 
-            value_sorted_players = sorted(value_matched_players, key=lambda i: i['price'])
-            for player in value_sorted_players:
-                if player['pos'] == 1 and TeamValidityCheck.goalie_check() == Option.UNDERLOAD:
-                    dream_team.append(player)
-                elif player['pos'] == 2 and TeamValidityCheck.defender_check() == Option.HAS_ROOM:
-                    dream_team.append(player)
-                elif player['pos'] == 3 and TeamValidityCheck.midfielder_check() == Option.HAS_ROOM:
-                    dream_team.append(player)
-                elif player['pos'] == 4 and TeamValidityCheck.striker_check() == Option.HAS_ROOM:
-                    dream_team.append(player)
-                else:
-                    points_clash = 0
-                    break
+        value_sorted_players = sorted(value_matched_players, key=lambda i: i['price'])
+        # value_matched_players = []
+        for player in value_sorted_players:
+            if player['pos'] == 1 and TeamValidityCheck.goalie_check() == Option.UNDERLOAD:
+                dream_team.append(player)
+                break
+            elif player['pos'] == 2 and TeamValidityCheck.defender_check() == Option.HAS_ROOM:
+                dream_team.append(player)
+                break
+            elif player['pos'] == 3 and TeamValidityCheck.midfielder_check() == Option.HAS_ROOM:
+                dream_team.append(player)
+                break
+            elif player['pos'] == 4 and TeamValidityCheck.striker_check() == Option.HAS_ROOM:
+                dream_team.append(player)
+                break
+            # else:
+            #     points_clash = 0
+            #     break
 
 
 class InitialTeamBuild:
