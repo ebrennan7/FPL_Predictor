@@ -218,15 +218,16 @@ class TeamBuild:
         t.striker_swap()
 
 
-begin_time = datetime.datetime.now()
-tb = TeamBuild()
-for dream_player in sorted(dream_team, key=lambda i: i['pos']):
-    total_points += dream_player['gw_points']
-    total_price += dream_player['price']
-    print(dream_player)
+if __name__ == "__main__":
+    begin_time = datetime.datetime.now()
+    tb = TeamBuild()
+    for dream_player in sorted(dream_team, key=lambda i: i['pos']):
+        total_points += dream_player['gw_points']
+        total_price += dream_player['price']
+        print(dream_player)
 
-print('\nTotal Points:', total_points, 'Total Price', total_price)
-print('Run time:', datetime.datetime.now() - begin_time)
+    print('\nTotal Points:', total_points, 'Total Price', total_price)
+    print('Run time:', datetime.datetime.now() - begin_time)
 
 
 
