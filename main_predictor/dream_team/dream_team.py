@@ -11,6 +11,7 @@ class Option:
     UNDERLOAD = 1
     OVERLOAD = 2
     HAS_ROOM = 3
+    AT_MINIMUM = 4
 
 
 class Constants:
@@ -105,6 +106,8 @@ class TeamValidityCheck:
             return Option.UNDERLOAD
         elif sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) > Constants.MAX_GOALKEEPER:
             return Option.OVERLOAD
+        elif sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) == Constants.MIN_GOALKEEPER:
+            return Option.AT_MINIMUM
         else:
             return Option.OK
 
@@ -114,8 +117,11 @@ class TeamValidityCheck:
             return Option.UNDERLOAD
         elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) > Constants.MAX_DEFENDER:
             return Option.OVERLOAD
+        elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) == Constants.MIN_DEFENDER:
+            return Option.AT_MINIMUM
         elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) < Constants.MAX_DEFENDER:
             return Option.HAS_ROOM
+
         else:
             return Option.OK
 
@@ -125,6 +131,8 @@ class TeamValidityCheck:
             return Option.UNDERLOAD
         elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) > Constants.MAX_MIDFIELDER:
             return Option.OVERLOAD
+        elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) == Constants.MIN_MIDFIELDER:
+            return Option.AT_MINIMUM
         elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) < Constants.MAX_MIDFIELDER:
             return Option.HAS_ROOM
         else:
@@ -136,6 +144,8 @@ class TeamValidityCheck:
             return Option.UNDERLOAD
         elif sum(player['pos'] == Constants.STRIKER for player in dream_team) > Constants.MAX_STRIKER:
             return Option.OVERLOAD
+        elif sum(player['pos'] == Constants.STRIKER for player in dream_team) == Constants.MIN_STRIKER:
+            return Option.AT_MINIMUM
         elif sum(player['pos'] == Constants.STRIKER for player in dream_team) < Constants.MAX_STRIKER:
             return Option.HAS_ROOM
         else:
@@ -196,13 +206,13 @@ class TeamValidityCheck:
                     Utilities.add_player()
 
     def prepare_to_swap(self, squad_number, outgoing_pos, incoming_pos):
-        if outgoing_pos == Constants.GOALKEEPER and not self.goalie_check() == Option.UNDERLOAD:
+        if outgoing_pos == Constants.GOALKEEPER and not self.goalie_check() == Option.AT_MINIMUM:
             Utilities.remove_player(squad_number, incoming_pos)
-        if outgoing_pos == Constants.DEFENDER and not self.defender_check() == Option.UNDERLOAD:
+        if outgoing_pos == Constants.DEFENDER and not self.defender_check() == Option.AT_MINIMUM:
             Utilities.remove_player(squad_number, incoming_pos)
-        if outgoing_pos == Constants.MIDFIELDER and not self.midfielder_check() == Option.UNDERLOAD:
+        if outgoing_pos == Constants.MIDFIELDER and not self.midfielder_check() == Option.AT_MINIMUM:
             Utilities.remove_player(squad_number, incoming_pos)
-        if outgoing_pos == Constants.STRIKER and not self.striker_check() == Option.UNDERLOAD:
+        if outgoing_pos == Constants.STRIKER and not self.striker_check() == Option.AT_MINIMUM:
             Utilities.remove_player(squad_number, incoming_pos)
 
 
