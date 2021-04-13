@@ -1,8 +1,5 @@
 import unittest
-import mock
 from main_predictor.dream_team import dream_team
-import wait_response
-
 
 class DreamTeamTests(unittest.TestCase):
     test_goalie = {'gw_points': 1, 'id': 1, 'name': 'Test Goalie', 'pos': 1, 'price': 1}
@@ -151,17 +148,6 @@ class DreamTeamTests(unittest.TestCase):
         self.assertLessEqual(sum(player['pos'] == 3 for player in dream_team.dream_team), dream_team.Constants.MAX_MIDFIELDER)
         self.assertGreaterEqual(sum(player['pos'] == 4 for player in dream_team.dream_team), dream_team.Constants.MIN_STRIKER)
         self.assertLessEqual(sum(player['pos'] == 4 for player in dream_team.dream_team), dream_team.Constants.MAX_STRIKER)
-
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
