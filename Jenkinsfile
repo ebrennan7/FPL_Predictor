@@ -40,8 +40,12 @@ pipeline {
 def sonarScanner(projectKey) {
     def scannerHome = tool 'sonar-scanner-local'
     withSonarQubeEnv("local-sonar") {
+
         if(fileExists("sonar-project.properties")) {
-            sh "${scannerHome}/bin/sonar-scanner"
+//             sh "${scannerHome}/bin/sonar-scanner"
+                sh """pytest --cov=main_predictor tests/dream_team_tests.py
+                      coverage xml
+                """
         }
         else {
             sh "${scannerHome}/bin/sonar-scanner -     Dsonar.projectKey=${projectKey} -Dsonar.java.binaries=build/classes -Dsonar.java.libraries=**/*.jar -Dsonar.projectVersion=${BUILD_NUMBER}"
