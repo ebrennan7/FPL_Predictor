@@ -10,7 +10,7 @@ FPL Predictor is a Python application that uses Fantasy Premier League's public 
 
 This project is designed to use Docker and Jenkins for automatic building and testing. It can be run manually using the following:
 
-```python
+```bash
 pip3 install requirements.txt
 python3 main_predictor/dream_team/dream_team.py
 ```

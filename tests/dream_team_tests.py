@@ -116,7 +116,7 @@ class DreamTeamTests(unittest.TestCase):
 
         self.assertEqual(sum(player['pos'] == 4 for player in dream_team.dream_team), dream_team.Constants.MAX_STRIKER)
 
-    def test_final_team_validity(self):
+    def test_team_validity(self):
         dream_team.dream_team = []
         dream_team.provisional_dream_team = []
         tv_instance = dream_team.TeamValidityCheck()
@@ -126,6 +126,21 @@ class DreamTeamTests(unittest.TestCase):
         tv_instance.defender_swap()
         tv_instance.midfielder_swap()
         tv_instance.striker_swap()
+
+        self.assertEqual(len(dream_team.dream_team), 11)
+        self.assertEqual(sum(player['pos'] == 1 for player in dream_team.dream_team), dream_team.Constants.MAX_GOALKEEPER)
+        self.assertEqual(sum(player['pos'] == 1 for player in dream_team.dream_team), dream_team.Constants.MIN_GOALKEEPER)
+        self.assertLessEqual(sum(player['pos'] == 2 for player in dream_team.dream_team), dream_team.Constants.MAX_DEFENDER)
+        self.assertGreaterEqual(sum(player['pos'] == 2 for player in dream_team.dream_team), dream_team.Constants.MIN_DEFENDER)
+        self.assertGreaterEqual(sum(player['pos'] == 3 for player in dream_team.dream_team), dream_team.Constants.MIN_MIDFIELDER)
+        self.assertLessEqual(sum(player['pos'] == 3 for player in dream_team.dream_team), dream_team.Constants.MAX_MIDFIELDER)
+        self.assertGreaterEqual(sum(player['pos'] == 4 for player in dream_team.dream_team), dream_team.Constants.MIN_STRIKER)
+        self.assertLessEqual(sum(player['pos'] == 4 for player in dream_team.dream_team), dream_team.Constants.MAX_STRIKER)
+
+    def test_team_build(self):
+        dream_team.dream_team = []
+        dream_team.provisional_dream_team = []
+        itb = dream_team.TeamBuild()
 
         self.assertEqual(len(dream_team.dream_team), 11)
         self.assertEqual(sum(player['pos'] == 1 for player in dream_team.dream_team), dream_team.Constants.MAX_GOALKEEPER)
