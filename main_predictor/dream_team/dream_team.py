@@ -52,13 +52,20 @@ class Utilities:
 
         value_sorted_players = sorted(value_matched_players, key=lambda i: i['price'])
         for player in value_sorted_players:
-            if (player['pos'] != 1 or TeamValidityCheck.goalie_check() != Option.UNDERLOAD) and (
-                    player['pos'] != 2 or TeamValidityCheck.defender_check() != Option.HAS_ROOM) and (
-                    player['pos'] != 3 or TeamValidityCheck.midfielder_check() != Option.HAS_ROOM) and (
-                    player['pos'] != 4 or TeamValidityCheck.striker_check() != Option.HAS_ROOM):
-                continue
-            dream_team.append(player)
-            break
+            if player['pos'] == 1 and TeamValidityCheck.goalie_check() == Option.UNDERLOAD \
+                    or player['pos'] == 2 and TeamValidityCheck.defender_check() == Option.HAS_ROOM or TeamValidityCheck.defender_check() == Option.AT_MINIMUM \
+                    or player['pos'] == 3 and TeamValidityCheck.midfielder_check() == Option.HAS_ROOM or TeamValidityCheck.midfielder_check() == Option.AT_MINIMUM \
+                    or player['pos'] == 4 and TeamValidityCheck.striker_check() == Option.HAS_ROOM:
+                dream_team.append(player)
+
+
+            # if (player['pos'] != 1 or TeamValidityCheck.goalie_check() != Option.UNDERLOAD) and (
+            #         player['pos'] != 2 or TeamValidityCheck.defender_check() != Option.HAS_ROOM or TeamValidityCheck.defender_check() != Option.AT_MINIMUM) and (
+            #         player['pos'] != 3 or TeamValidityCheck.midfielder_check() != Option.HAS_ROOM) and (
+            #         player['pos'] != 4 or TeamValidityCheck.striker_check() != Option.HAS_ROOM):
+            #     continue
+            # dream_team.append(player)
+            # break
 
 
 class InitialTeamBuild:
@@ -73,29 +80,35 @@ class InitialTeamBuild:
                 upcoming_gameweek = gameweek['name']
                 break
 
-        print(upcoming_gameweek)
-        players_raw = parsed['elements']
-        players = []
+        if upcoming_gameweek == "Gameweek 1":
+            print("The season hasn't started. Try again after the first Gameweek has been played.")
+            return False
+        else:
+            print(upcoming_gameweek)
+            players_raw = parsed['elements']
+            players = []
 
-        # Make new list with relevant properties
-        for player in players_raw:
-            players.append({
-                'id': player['id'],
-                'name': player['first_name'] + ' ' + player['second_name'],
-                'gw_points': player['event_points'],
-                'pos': player['element_type'],
-                'price': player['now_cost']/10
-            })
+            # Make new list with relevant properties
+            for player in players_raw:
+                players.append({
+                    'id': player['id'],
+                    'name': player['first_name'] + ' ' + player['second_name'],
+                    'gw_points': player['event_points'],
+                    'pos': player['element_type'],
+                    'price': player['now_cost'] / 10
+                })
 
-        global provisional_dream_team
-        global dream_team
-        provisional_dream_team = sorted(players, key=lambda i: (i['gw_points'], -i['price']), reverse=True)
-        dream_team = []
+            global provisional_dream_team
+            global dream_team
+            provisional_dream_team = sorted(players, key=lambda i: (i['gw_points'], -i['price']), reverse=True)
+            dream_team = []
 
-        # Make sure positions are valid
-        for dream_player in provisional_dream_team[:11]:
-            provisional_dream_team.remove(dream_player)
-            dream_team.append(dream_player)
+            # Make sure positions are valid
+            for dream_player in provisional_dream_team[:11]:
+                provisional_dream_team.remove(dream_player)
+                dream_team.append(dream_player)
+
+            return True
 
 
 class TeamValidityCheck:
@@ -219,13 +232,13 @@ class TeamValidityCheck:
 class TeamBuild:
     def __init__(self):
         ib = InitialTeamBuild()
-        ib.build()
-        t = TeamValidityCheck()
+        if ib.build():
+            t = TeamValidityCheck()
 
-        t.goalie_swap()
-        t.defender_swap()
-        t.midfielder_swap()
-        t.striker_swap()
+            t.goalie_swap()
+            t.defender_swap()
+            t.midfielder_swap()
+            t.striker_swap()
 
 
 if __name__ == "__main__":
