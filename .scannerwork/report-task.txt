@@ -1,0 +1,6 @@
+projectKey=FPL_Predictor
+serverUrl=http://localhost:9000
+serverVersion=8.7.1.42226
+dashboardUrl=http://localhost:9000/dashboard?id=FPL_Predictor
+ceTaskId=AXjLsMaOA6-j1-KgLExl
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXjLsMaOA6-j1-KgLExl

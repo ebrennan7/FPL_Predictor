@@ -3,28 +3,28 @@ import datetime
 from main_predictor import constants
 
 Constants = constants.Dream_Team_Constants
-dream_team = []
-provisional_dream_team = []
+wildcard_team = []
+provisional_wildcard_team = []
 total_points = 0
 total_price = 0
 
 class Utilities:
     @staticmethod
     def remove_player(squad_number_to_go, pos):
-        dream_team.pop(squad_number_to_go)
-        for player in provisional_dream_team:
+        wildcard_team.pop(squad_number_to_go)
+        for player in provisional_wildcard_team:
             if player['pos'] == pos:
-                dream_team.append(player)
-                provisional_dream_team.remove(player)
+                wildcard_team.append(player)
+                provisional_wildcard_team.remove(player)
                 break
 
     @staticmethod
     def add_player():
         value_matched_players = []
         points_clash = 0
-        for player in provisional_dream_team:
-            if player['gw_points'] >= points_clash:
-                points_clash = player['gw_points']
+        for player in provisional_wildcard_team:
+            if player['ep_next'] >= points_clash:
+                points_clash = player['ep_next']
                 value_matched_players.append(player)
             else:
                 break
@@ -35,7 +35,7 @@ class Utilities:
                     or player['pos'] == 2 and TeamValidityCheck.defender_check() == Constants.HAS_ROOM or TeamValidityCheck.defender_check() == Constants.AT_MINIMUM \
                     or player['pos'] == 3 and TeamValidityCheck.midfielder_check() == Constants.HAS_ROOM or TeamValidityCheck.midfielder_check() == Constants.AT_MINIMUM \
                     or player['pos'] == 4 and TeamValidityCheck.striker_check() == Constants.HAS_ROOM:
-                dream_team.append(player)
+                wildcard_team.append(player)
 
 
             # if (player['pos'] != 1 or TeamValidityCheck.goalie_check() != Constants.UNDERLOAD) and (
@@ -43,7 +43,7 @@ class Utilities:
             #         player['pos'] != 3 or TeamValidityCheck.midfielder_check() != Constants.HAS_ROOM) and (
             #         player['pos'] != 4 or TeamValidityCheck.striker_check() != Constants.HAS_ROOM):
             #     continue
-            # dream_team.append(player)
+            # wildcard_team.append(player)
             # break
 
 
@@ -74,18 +74,19 @@ class InitialTeamBuild:
                     'name': player['first_name'] + ' ' + player['second_name'],
                     'gw_points': player['event_points'],
                     'pos': player['element_type'],
-                    'price': player['now_cost'] / 10
+                    'price': player['now_cost'] / 10,
+                    'ep_next': float(player['ep_next'])
                 })
 
-            global provisional_dream_team
-            global dream_team
-            provisional_dream_team = sorted(players, key=lambda i: (i['gw_points'], -i['price']), reverse=True)
-            dream_team = []
+            global provisional_wildcard_team
+            global wildcard_team
+            provisional_wildcard_team = sorted(players, key=lambda i: (i['ep_next'], -i['price']), reverse=True)
+            wildcard_team = []
 
             # Make sure positions are valid
-            for dream_player in provisional_dream_team[:11]:
-                provisional_dream_team.remove(dream_player)
-                dream_team.append(dream_player)
+            for dream_player in provisional_wildcard_team[:11]:
+                provisional_wildcard_team.remove(dream_player)
+                wildcard_team.append(dream_player)
 
             return True
 
@@ -94,24 +95,24 @@ class TeamValidityCheck:
 
     @staticmethod
     def goalie_check():
-        if sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) < Constants.MIN_GOALKEEPER:
+        if sum(player['pos'] == Constants.GOALKEEPER for player in wildcard_team) < Constants.MIN_GOALKEEPER:
             return Constants.UNDERLOAD
-        elif sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) > Constants.MAX_GOALKEEPER:
+        elif sum(player['pos'] == Constants.GOALKEEPER for player in wildcard_team) > Constants.MAX_GOALKEEPER:
             return Constants.OVERLOAD
-        elif sum(player['pos'] == Constants.GOALKEEPER for player in dream_team) == Constants.MIN_GOALKEEPER:
+        elif sum(player['pos'] == Constants.GOALKEEPER for player in wildcard_team) == Constants.MIN_GOALKEEPER:
             return Constants.AT_MINIMUM
         else:
             return Constants.OK
 
     @staticmethod
     def defender_check():
-        if sum(player['pos'] == Constants.DEFENDER for player in dream_team) < Constants.MIN_DEFENDER:
+        if sum(player['pos'] == Constants.DEFENDER for player in wildcard_team) < Constants.MIN_DEFENDER:
             return Constants.UNDERLOAD
-        elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) > Constants.MAX_DEFENDER:
+        elif sum(player['pos'] == Constants.DEFENDER for player in wildcard_team) > Constants.MAX_DEFENDER:
             return Constants.OVERLOAD
-        elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) == Constants.MIN_DEFENDER:
+        elif sum(player['pos'] == Constants.DEFENDER for player in wildcard_team) == Constants.MIN_DEFENDER:
             return Constants.AT_MINIMUM
-        elif sum(player['pos'] == Constants.DEFENDER for player in dream_team) < Constants.MAX_DEFENDER:
+        elif sum(player['pos'] == Constants.DEFENDER for player in wildcard_team) < Constants.MAX_DEFENDER:
             return Constants.HAS_ROOM
 
         else:
@@ -119,82 +120,82 @@ class TeamValidityCheck:
 
     @staticmethod
     def midfielder_check():
-        if sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) < Constants.MIN_MIDFIELDER:
+        if sum(player['pos'] == Constants.MIDFIELDER for player in wildcard_team) < Constants.MIN_MIDFIELDER:
             return Constants.UNDERLOAD
-        elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) > Constants.MAX_MIDFIELDER:
+        elif sum(player['pos'] == Constants.MIDFIELDER for player in wildcard_team) > Constants.MAX_MIDFIELDER:
             return Constants.OVERLOAD
-        elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) == Constants.MIN_MIDFIELDER:
+        elif sum(player['pos'] == Constants.MIDFIELDER for player in wildcard_team) == Constants.MIN_MIDFIELDER:
             return Constants.AT_MINIMUM
-        elif sum(player['pos'] == Constants.MIDFIELDER for player in dream_team) < Constants.MAX_MIDFIELDER:
+        elif sum(player['pos'] == Constants.MIDFIELDER for player in wildcard_team) < Constants.MAX_MIDFIELDER:
             return Constants.HAS_ROOM
         else:
             return Constants.OK
 
     @staticmethod
     def striker_check():
-        if sum(player['pos'] == Constants.STRIKER for player in dream_team) < Constants.MIN_STRIKER:
+        if sum(player['pos'] == Constants.STRIKER for player in wildcard_team) < Constants.MIN_STRIKER:
             return Constants.UNDERLOAD
-        elif sum(player['pos'] == Constants.STRIKER for player in dream_team) > Constants.MAX_STRIKER:
+        elif sum(player['pos'] == Constants.STRIKER for player in wildcard_team) > Constants.MAX_STRIKER:
             return Constants.OVERLOAD
-        elif sum(player['pos'] == Constants.STRIKER for player in dream_team) == Constants.MIN_STRIKER:
+        elif sum(player['pos'] == Constants.STRIKER for player in wildcard_team) == Constants.MIN_STRIKER:
             return Constants.AT_MINIMUM
-        elif sum(player['pos'] == Constants.STRIKER for player in dream_team) < Constants.MAX_STRIKER:
+        elif sum(player['pos'] == Constants.STRIKER for player in wildcard_team) < Constants.MAX_STRIKER:
             return Constants.HAS_ROOM
         else:
             return Constants.OK
 
     def goalie_swap(self):
-        squad_number = len(dream_team) - 1
+        squad_number = len(wildcard_team) - 1
         # No Goalie
         while self.goalie_check() == Constants.UNDERLOAD:
-            pos_of_player_to_go = dream_team[squad_number]['pos']
+            pos_of_player_to_go = wildcard_team[squad_number]['pos']
             self.prepare_to_swap(squad_number, pos_of_player_to_go, Constants.GOALKEEPER)
             squad_number -= 1
 
         # More than one Goalie
         while self.goalie_check() == Constants.OVERLOAD:
-            for player in reversed(dream_team):
+            for player in reversed(wildcard_team):
                 if player['pos'] == Constants.GOALKEEPER and self.goalie_check() == Constants.OVERLOAD:
-                    dream_team.remove(player)
+                    wildcard_team.remove(player)
                     Utilities.add_player()
 
     def defender_swap(self):
-        squad_number = len(dream_team)-1
+        squad_number = len(wildcard_team)-1
         while self.defender_check() == Constants.UNDERLOAD:
-            pos_of_player_to_go = dream_team[squad_number]['pos']
+            pos_of_player_to_go = wildcard_team[squad_number]['pos']
             self.prepare_to_swap(squad_number, pos_of_player_to_go, Constants.DEFENDER)
             squad_number -= 1
 
         while self.defender_check() == Constants.OVERLOAD:
-            for player in reversed(dream_team):
+            for player in reversed(wildcard_team):
                 if player['pos'] == Constants.DEFENDER and self.defender_check() == Constants.OVERLOAD:
-                    dream_team.remove(player)
+                    wildcard_team.remove(player)
                     Utilities.add_player()
 
     def midfielder_swap(self):
-        squad_number = len(dream_team)-1
+        squad_number = len(wildcard_team)-1
         while self.midfielder_check() == Constants.UNDERLOAD:
-            pos_of_player_to_go = dream_team[squad_number]['pos']
+            pos_of_player_to_go = wildcard_team[squad_number]['pos']
             self.prepare_to_swap(squad_number, pos_of_player_to_go, Constants.MIDFIELDER)
             squad_number -= 1
 
         while self.midfielder_check() == Constants.OVERLOAD:
-            for player in reversed(dream_team):
+            for player in reversed(wildcard_team):
                 if player['pos'] == Constants.MIDFIELDER and self.midfielder_check() == Constants.OVERLOAD:
-                    dream_team.remove(player)
+                    wildcard_team.remove(player)
                     Utilities.add_player()
 
     def striker_swap(self):
-        squad_number = len(dream_team)-1
+        squad_number = len(wildcard_team)-1
         while self.striker_check() == Constants.UNDERLOAD:
-            pos_of_player_to_go = dream_team[squad_number]['pos']
+            pos_of_player_to_go = wildcard_team[squad_number]['pos']
             self.prepare_to_swap(squad_number, pos_of_player_to_go, Constants.STRIKER)
             squad_number -= 1
 
         while self.striker_check() == Constants.OVERLOAD:
-            for player in reversed(dream_team):
+            for player in reversed(wildcard_team):
                 if player['pos'] == Constants.STRIKER and self.striker_check() == Constants.OVERLOAD:
-                    dream_team.remove(player)
+                    wildcard_team.remove(player)
                     Utilities.add_player()
 
     def prepare_to_swap(self, squad_number, outgoing_pos, incoming_pos):
@@ -223,7 +224,7 @@ class TeamBuild:
 if __name__ == "__main__":
     begin_time = datetime.datetime.now()
     tb = TeamBuild()
-    for dream_player in sorted(dream_team, key=lambda i: i['pos']):
+    for dream_player in sorted(wildcard_team, key=lambda i: i['pos']):
         total_points += dream_player['gw_points']
         total_price += dream_player['price']
         print(dream_player)

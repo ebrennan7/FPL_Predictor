@@ -1,5 +1,5 @@
 import unittest
-from main_predictor.dream_team import dream_team
+from main_predictor.wildcard_team import d
 from main_predictor import constants
 
 Constants = constants.Dream_Team_Constants
@@ -17,7 +17,7 @@ class DreamTeamTests(unittest.TestCase):
         dream_team.InitialTeamBuild.build()
         self.assertEqual(len(dream_team.dream_team), 11)
 
-    def test_too_many_goalies(self):                                                                                                                                                                                                                                                                                                                                                 
+    def test_too_many_goalies(self):
         tv_instance = dream_team.TeamValidityCheck()
         dream_team.dream_team = []
         while len(dream_team.dream_team) <= 11:
